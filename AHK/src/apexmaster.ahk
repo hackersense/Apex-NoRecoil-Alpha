@@ -683,7 +683,7 @@ ActiveMonitorInfo(ByRef X, ByRef Y, ByRef Width, ByRef Height)
     SysGet, monCount, MonitorCount
     Loop %monCount% {
         SysGet, curMon, Monitor, %a_index%
-        if ( mouseX >= curMonLeft and mouseX <= curMonRight and mouseY >= curMonTop and mouseY <= curMonBottom ) {
+        if (mouseX >= curMonLeft and mouseX <= curMonRight and mouseY >= curMonTop and mouseY <= curMonBottom) {
             X := curMonTop
             y := curMonLeft
             Height := curMonBottom - curMonTop
@@ -719,20 +719,20 @@ return
 RunAsAdmin()
 {
     Global 0
-IfEqual, A_IsAdmin, 1, Return 0
+    IfEqual, A_IsAdmin, 1, Return 0
 
-Loop, %0%
-    params .= A_Space . %A_Index%
+    Loop, %0%
+        params .= A_Space . %A_Index%
 
-DllCall("shell32\ShellExecute" (A_IsUnicode ? "":"A"),uint,0,str,"RunAs",str,(A_IsCompiled ? A_ScriptFullPath : A_AhkPath),str,(A_IsCompiled ? "": """" . A_ScriptFullPath . """" . A_Space) params,str,A_WorkingDir,int,1)
-ExitApp
+    DllCall("shell32\ShellExecute" (A_IsUnicode ? "" : "A"), uint, 0, str, "RunAs", str, (A_IsCompiled ? A_ScriptFullPath : A_AhkPath), str, (A_IsCompiled ? "" : """" . A_ScriptFullPath . """" . A_Space) params, str, A_WorkingDir, int, 1)
+    ExitApp
 }
 
-HideProcess() 
+HideProcess()
 {
-    if ((A_Is64bitOS=1) && (A_PtrSize!=4))
+    if ((A_Is64bitOS = 1) && (A_PtrSize != 4))
         hMod := DllCall("LoadLibrary", Str, "hyde64.dll", Ptr)
-    else if ((A_Is32bitOS=1) && (A_PtrSize=4))
+    else if ((A_Is32bitOS = 1) && (A_PtrSize = 4))
         hMod := DllCall("LoadLibrary", Str, "hyde.dll", Ptr)
     else
     {
