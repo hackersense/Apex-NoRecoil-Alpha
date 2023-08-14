@@ -1,3 +1,4 @@
+#Requires AutoHotkey v1.1
 #NoEnv
 #MaxHotkeysPerInterval 99000000
 #HotkeyInterval 99000000
@@ -5,12 +6,12 @@
 #SingleInstance force
 #MaxThreadsBuffer on
 #Persistent
-Process, Priority, , A
+Process, Priority, , R
 SetBatchLines, -1
 ListLines Off
 SetWorkingDir %A_ScriptDir%
 SetKeyDelay, -1, -1
-SetMouseDelay, -1
+SetMouseDelay, 40
 SetDefaultMouseSpeed, 0
 SetWinDelay, -1
 SetControlDelay, -1
@@ -38,7 +39,6 @@ global VOLT_WEAPON_TYPE := "VOLT"
 global HAVOC_WEAPON_TYPE := "HAVOC"
 global HAVOC_TURBO_WEAPON_TYPE := "HAVOC TURBO"
 global NEMESIS_WEAPON_TYPE := "NEMESIS"
-global NEMESIS_CHARGED_WEAPON_TYPE := "NEMESIS CHARGED"
 global PROWLER_WEAPON_TYPE := "PROWLER"
 global HEMLOK_WEAPON_TYPE := "HEMLOK"
 global HEMLOK_SINGLE_WEAPON_TYPE := "HEMLOK SINGLE"
@@ -59,25 +59,17 @@ global SELLA_WEAPON_TYPE := "sella"
 global WEAPON_1_PIXELS := LoadPixel("weapon1")
 global WEAPON_2_PIXELS := LoadPixel("weapon2")
 ; weapon color
-global LIGHT_WEAPON_COLOR := 0x2D547D
-global HEAVY_WEAPON_COLOR := 0x596B38
-global ENERGY_WEAPON_COLOR := 0x286E5A
-global SUPPY_DROP_COLOR_NORMAL := 0x3701B2
-global SUPPY_DROP_COLOR_PROTANOPIA := 0x714AB2
-global SUPPY_DROP_COLOR_DEUTERANOPIA := 0x1920B2
-global SUPPY_DROP_COLOR_TRITANOPIA := 0x312E90
-global SUPPY_DROP_COLOR := SUPPY_DROP_COLOR_NORMAL
-global colorblind
-if (colorblind == "Protanopia") {
-    SUPPY_DROP_COLOR := SUPPY_DROP_COLOR_PROTANOPIA
-} else if (colorblind == "Deuteranopia") {
-    SUPPY_DROP_COLOR := SUPPY_DROP_COLOR_DEUTERANOPIA
-} else if (colorblind == "Tritanopia") {
-    SUPPY_DROP_COLOR := SUPPY_DROP_COLOR_TRITANOPIA
-}
-global SHOTGUN_WEAPON_COLOR := 0x07206B
-global SNIPER_WEAPON_COLOR := 0x8F404B
-global SELLA_WEAPON_COLOR := 0xA13CA1
+global LIGHT_WEAPON_COLOR := LoadColor("light")
+global HEAVY_WEAPON_COLOR := LoadColor("heavy")
+global ENERGY_WEAPON_COLOR := LoadColor("energy")
+global SUPPY_DROP_COLOR_NORMAL := LoadColor("suppy_drop_normal")
+global SUPPY_DROP_COLOR_PROTANOPIA := LoadColor("suppy_drop_protanopia")
+global SUPPY_DROP_COLOR_DEUTERANOPIA := LoadColor("suppy_drop_deuteranopia")
+global SUPPY_DROP_COLOR_TRITANOPIA := LoadColor("suppy_drop_tritanopia")
+global SHOTGUN_WEAPON_COLOR := LoadColor("shotgun")
+global SNIPER_WEAPON_COLOR := LoadColor("sniper")
+global SELLA_WEAPON_COLOR := LoadColor("sella")
+global SELECTIVE_FIRE_CAN_FIRE_COLOR := LoadColor("selective_fire_weapon_can_fire")
 
 ; three x, y check point, true means 0xFFFFFFFF
 ; light weapon
@@ -87,9 +79,10 @@ global P2020_PIXELS := LoadPixel("p2020")
 global RE45_PIXELS := LoadPixel("re45")
 global G7_PIXELS := LoadPixel("g7")
 global SPITFIRE_PIXELS := LoadPixel("spitfire")
+global ALTERNATOR_PIXELS := LoadPixel("alternator")
 ; heavy weapon
+global HEMLOK_PIXELS := LoadPixel("hemlok")
 global FLATLINE_PIXELS := LoadPixel("flatline")
-global PROWLER_PIXELS := LoadPixel("prowler")
 global RAMPAGE_PIXELS := LoadPixel("rampage")
 global P3030_PIXELS := LoadPixel("p3030")
 ; special
@@ -102,17 +95,19 @@ global NEMESIS_PIXELS := LoadPixel("nemesis")
 ; sniper weapon
 global WINGMAN_PIXELS := LoadPixel("wingman")
 ; supply drop weapon
-global HEMLOK_PIXELS := LoadPixel("hemlok")
+global PROWLER_PIXELS := LoadPixel("prowler")
 global LSTAR_PIXELS := LoadPixel("lstar")
 ; Turbocharger
 global HAVOC_TURBOCHARGER_PIXELS := LoadPixel("havoc_turbocharger")
 global DEVOTION_TURBOCHARGER_PIXELS := LoadPixel("devotion_turbocharger")
+; RampageAMP
+global RAMPAGE_AMP_PIXELS := LoadPixel("rampage_amp")
 ; NemesisFullCharge
 global NEMESIS_FULL_CHARGE_PIXELS := LoadPixel("nemesis_full_charge")
 ; Singlemode
 global SINGLE_MODE_PIXELS := LoadPixel("single_mode")
-; shotgun
-global PEACEKEEPER_PIXELS := LoadPixel("peacekeeper")
+; SelectiveFire weapon can fire check
+global SELECTIVE_FIRE_CAN_FIRE_PIXELS := LoadPixel("selective_fire_weapon_can_fire")
 
 ; for gold optics
 global ColVn := 6
@@ -182,6 +177,13 @@ LoadPixel(name) {
     return weapon_num_pixels
 }
 
+; load color from file
+LoadColor(name) {
+    global weapon_color_name
+    IniRead, weapon_color_str, %A_ScriptDir%\%weapon_color_name%.ini, colors, %name%
+    return weapon_color_str
+}
+
 ; load pattern from file
 LoadPattern(filename) {
     FileRead, pattern_str, %A_ScriptDir%\pattern\%filename%
@@ -214,17 +216,18 @@ global NEMESIS_CHARGED_PATTERN = LoadPattern("NemesisCharged.txt")
 ; special
 global CAR_PATTERN := LoadPattern("CAR.txt")
 ; heavy weapon pattern
+global HEMLOK_PATTERN := LoadPattern("Hemlok.txt")
+global HEMLOK_SINGLE_PATTERN := LoadPattern("HemlokSingle.txt")
 global FLATLINE_PATTERN := LoadPattern("Flatline.txt")
 global RAMPAGE_PATTERN := LoadPattern("Rampage.txt")
 global RAMPAGEAMP_PATTERN := LoadPattern("RampageAmp.txt")
-global PROWLER_PATTERN := LoadPattern("Prowler.txt")
 global P3030_PATTERN := LoadPattern("3030.txt")
 ; sinper weapon pattern
 global WINGMAN_PATTERN := LoadPattern("Wingman.txt")
 ; supply drop weapon pattern
+global PROWLER_PATTERN := LoadPattern("Prowler.txt")
+global PROWLER_FULLAUTO_PATTERN := LoadPattern("ProwlerFullAuto.txt")
 global LSTAR_PATTERN := LoadPattern("Lstar.txt")
-global HEMLOK_PATTERN := LoadPattern("Hemlok.txt")
-global HEMLOK_SINGLE_PATTERN := LoadPattern("HemlokSingle.txt")
 ; sella
 global SELLA_PATTERN := LoadPattern("Sella.txt")
 
@@ -275,6 +278,13 @@ CheckTurbocharger(turbocharger_pixels)
     return false
 }
 
+IsRampageAMP()
+{
+    target_color := 0x3A24F0
+    PixelSearch, Px, Py, (RAMPAGE_AMP_PIXELS[1] - 20), (RAMPAGE_AMP_PIXELS[2] - 20), (RAMPAGE_AMP_PIXELS[1] + 20), (RAMPAGE_AMP_PIXELS[2] + 20), target_color, 5, Fast
+    return ErrorLevel == 0
+}
+
 IsNemesisFullCharge()
 {
     target_color := 0xD6BD62
@@ -293,6 +303,11 @@ CheckSingleMode()
         return true
     }
     return false
+}
+
+CheckSuppyDropColor(color)
+{
+    return color == SUPPY_DROP_COLOR_NORMAL || color == SUPPY_DROP_COLOR_PROTANOPIA || color == SUPPY_DROP_COLOR_DEUTERANOPIA || color == SUPPY_DROP_COLOR_TRITANOPIA
 }
 
 Reset()
@@ -388,7 +403,14 @@ DetectAndSetWeapon()
             is_gold_optics_weapon := true
         }
     } else if (check_point_color == HEAVY_WEAPON_COLOR) {
-        if (CheckWeapon(FLATLINE_PIXELS)) {
+	    if (CheckWeapon(HEMLOK_PIXELS)) {
+            current_weapon_type := HEMLOK_WEAPON_TYPE
+            current_pattern := HEMLOK_PATTERN
+            if (is_single_mode) {
+                current_weapon_type := HEMLOK_SINGLE_WEAPON_TYPE
+                current_pattern := HEMLOK_SINGLE_PATTERN
+            }
+        } else if (CheckWeapon(FLATLINE_PIXELS)) {
             current_weapon_type := FLATLINE_WEAPON_TYPE
             current_pattern := FLATLINE_PATTERN
         } else if (CheckWeapon(PROWLER_PIXELS)) {
@@ -396,7 +418,11 @@ DetectAndSetWeapon()
             current_pattern := PROWLER_PATTERN
         } else if (CheckWeapon(RAMPAGE_PIXELS)) {
             current_weapon_type := RAMPAGE_WEAPON_TYPE
-            current_pattern := RAMPAGE_PATTERN
+            if (IsRampageAMP()) {
+                current_pattern := RAMPAGEAMP_PATTERN
+            } else {
+                current_pattern := RAMPAGE_PATTERN
+            }
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
@@ -425,20 +451,22 @@ DetectAndSetWeapon()
             }
         } else if (CheckWeapon(NEMESIS_PIXELS)) {
             current_weapon_type := NEMESIS_WEAPON_TYPE
-            current_pattern := NEMESIS_PATTERN
             if (IsNemesisFullCharge()) {
-                current_weapon_type := NEMESIS_CHARGED_WEAPON_TYPE
                 current_pattern := NEMESIS_CHARGED_PATTERN
+            } else {
+                current_pattern := NEMESIS_PATTERN
             }
         }
-    } else if (check_point_color == SUPPY_DROP_COLOR) {
-        if (CheckWeapon(HEMLOK_PIXELS)) {
-            current_weapon_type := HEMLOK_WEAPON_TYPE
-            current_pattern := HEMLOK_PATTERN
-            if (is_single_mode) {
-                current_weapon_type := HEMLOK_SINGLE_WEAPON_TYPE
-                current_pattern := HEMLOK_SINGLE_PATTERN
+    } else if (CheckSuppyDropColor(check_point_color)) {
+        if (CheckWeapon(PROWLER_PIXELS)) {
+	        if (!is_single_mode) {
+            	current_weapon_type := PROWLER_WEAPON_TYPE
+            	current_pattern := PROWLER_PATTERN
+            } else {
+                current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
+                current_pattern := PROWLER_FULLAUTO_PATTERN
             }
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(LSTAR_PIXELS)) {
             current_weapon_type := LSTAR_WEAPON_TYPE
             current_pattern := LSTAR_PATTERN
@@ -524,7 +552,7 @@ ExitApp
     if (IsMouseShown() || current_weapon_type == DEFAULT_WEAPON_TYPE || current_weapon_type == SHOTGUN_WEAPON_TYPE || current_weapon_type == SNIPER_WEAPON_TYPE)
         return
 
-    if (is_single_mode && !(IsAutoClickNeeded()))
+    if (is_single_mode && current_weapon_type != PROWLER_FULLAUTO_WEAPON_TYPE && !IsAutoClickNeeded())
         return
 
     if (ads_only && !GetKeyState("RButton"))
@@ -537,13 +565,11 @@ ExitApp
         Sleep, 400
     }
     
-    if (current_weapon_type == NEMESIS_WEAPON_TYPE || current_weapon_type == NEMESIS_CHARGED_WEAPON_TYPE)
+    if (current_weapon_type == NEMESIS_WEAPON_TYPE)
     {
         if (IsNemesisFullCharge()) {
-            current_weapon_type := NEMESIS_CHARGED_WEAPON_TYPE
             current_pattern := NEMESIS_CHARGED_PATTERN
         } else {
-            current_weapon_type := NEMESIS_WEAPON_TYPE
             current_pattern := NEMESIS_PATTERN
         }
     }
@@ -562,12 +588,12 @@ ExitApp
             interval := compensation[3]
         }
 
-        if (IsAutoClickNeeded()) {
+        if (IsAutoClickNeeded() && auto_fire) {
             Click
             Random, rand, 1, 20
             interval := interval + rand
         }
-        
+
         DllCall("mouse_event", uint, 0x01, uint, Round(x * modifier), uint, Round(y * modifier))
         if (debug) {
             ToolTip % x " " y " " a_index
@@ -587,7 +613,7 @@ IniRead:
         MsgBox, Couldn't find settings.ini. I'll create one for you.
 
         IniWrite, "1920x1080", settings.ini, screen settings, resolution
-        IniWrite, "Normal"`n, settings.ini, screen settings, colorblind
+        IniWrite, "weapon_color"`n, settings.ini, screen settings, weapon_color_name
         IniWrite, "5.0", settings.ini, mouse settings, sens
         IniWrite, "1.0", settings.ini, mouse settings, zoom_sens
         IniWrite, "1", settings.ini, mouse settings, auto_fire
@@ -606,7 +632,7 @@ IniRead:
     }
     Else {
         IniRead, resolution, settings.ini, screen settings, resolution
-        IniRead, colorblind, settings.ini, screen settings, colorblind
+        IniRead, weapon_color_name, settings.ini, screen settings, weapon_color_name
         IniRead, zoom_sens, settings.ini, mouse settings, zoom_sens
         IniRead, sens, settings.ini, mouse settings, sens
         IniRead, auto_fire, settings.ini, mouse settings, auto_fire
