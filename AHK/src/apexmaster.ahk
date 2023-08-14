@@ -652,9 +652,18 @@ IniRead:
     }
 return
 
+; Check current window is apex legends
+ApexIsActive()
+{
+    return WinActive("ahk_exe r5apex.exe") != 0 || WinActive("ahk_exe r5apex_dx12.exe") != 0
+}
+
 ; Suspends the script when mouse is visible ie: inventory, menu, map.
 IsMouseShown()
 {
+    if (!ApexIsActive())
+        return true
+
     StructSize := A_PtrSize + 16
     VarSetCapacity(InfoStruct, StructSize)
     NumPut(StructSize, InfoStruct)
