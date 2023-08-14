@@ -670,10 +670,7 @@ IsMouseShown()
     DllCall("GetCursorInfo", UInt, &InfoStruct)
     Result := NumGet(InfoStruct, 8)
 
-    if Result > 1
-        return true
-    else
-        Return false
+    return Result > 1
 }
 
 ActiveMonitorInfo(ByRef X, ByRef Y, ByRef Width, ByRef Height)
