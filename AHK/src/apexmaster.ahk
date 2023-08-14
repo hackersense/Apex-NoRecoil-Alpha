@@ -305,6 +305,11 @@ CheckSingleMode()
     return false
 }
 
+IsSelectiveFireWeapon(weapon_type)
+{
+    return weapon_type != DEFAULT_WEAPON_TYPE && (weapon_type == HEMLOK_WEAPON_TYPE || weapon_type == HEMLOK_SINGLE_WEAPON_TYPE || weapon_type == PROWLER_WEAPON_TYPE || weapon_type == PROWLER_FULLAUTO_WEAPON_TYPE || weapon_type == FLATLINE_WEAPON_TYPE || weapon_type == R301_WEAPON_TYPE)
+}
+
 CheckSuppyDropColor(color)
 {
     return color == SUPPY_DROP_COLOR_NORMAL || color == SUPPY_DROP_COLOR_PROTANOPIA || color == SUPPY_DROP_COLOR_DEUTERANOPIA || color == SUPPY_DROP_COLOR_TRITANOPIA
@@ -505,6 +510,9 @@ return
 return
 
 ~$*B::
+    if (!IsSelectiveFireWeapon(current_weapon_type) || GetKeyState("LButton", "P"))
+        return
+        
     Sleep, 250
     DetectAndSetWeapon()
 return
