@@ -499,14 +499,26 @@ IsAutoClickNeeded()
     DetectAndSetWeapon()
 return
 
+~$*M::
+~$*H::
+    DetectAndSetWeapon()
+return
+
 ~$*B::
     Sleep, 250
     DetectAndSetWeapon()
 return
 
+~$*R::
+    Sleep, 100
+    if (!GetKeyState("LButton", "P"))
+        DetectAndSetWeapon(false)
+return
+
 ~$*1::
 ~$*2::
-~$*R::
+~$*WheelUp Up::
+~$*WheelDown Up::
     Sleep, 100
     DetectAndSetWeapon()
 return
@@ -538,16 +550,10 @@ return
 ~End::
 ExitApp
 
-; $*LButton up::
-;     Click, Up
-; return
-
 ~$*LButton::
     if (has_gold_optics && gold_optics && is_gold_optics_weapon && GetKeyState("RButton")) {
         MoveMouse2Red()
     }
-
-    ; Click, Down
 
     if (IsMouseShown() || current_weapon_type == DEFAULT_WEAPON_TYPE || current_weapon_type == SHOTGUN_WEAPON_TYPE || current_weapon_type == SNIPER_WEAPON_TYPE)
         return
@@ -558,7 +564,7 @@ ExitApp
     if (ads_only && !GetKeyState("RButton"))
         return
 
-    if (trigger_only && !GetKeyState(trigger_button,"T"))
+    if (trigger_only && !GetKeyState(trigger_button, "T"))
         return
 
     if (current_weapon_type == HAVOC_WEAPON_TYPE) {
@@ -579,7 +585,7 @@ ExitApp
         y := 0
         interval := 20
         if (A_Index <= current_pattern.MaxIndex()) {
-            compensation := StrSplit(current_pattern[Min(A_Index, current_pattern.MaxIndex())],",")
+            compensation := StrSplit(current_pattern[Min(A_Index, current_pattern.MaxIndex())], ",")
             if (compensation.MaxIndex() < 3) {
                 return
             }
