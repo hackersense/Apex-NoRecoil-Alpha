@@ -520,7 +520,7 @@ return
 ~$*R::
     Sleep, 100
     if (!GetKeyState("LButton", "P"))
-        DetectAndSetWeapon(false)
+        DetectAndSetWeapon()
 return
 
 ~$*1::
