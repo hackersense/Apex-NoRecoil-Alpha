@@ -40,6 +40,7 @@ global HAVOC_WEAPON_TYPE := "HAVOC"
 global HAVOC_TURBO_WEAPON_TYPE := "HAVOC TURBO"
 global NEMESIS_WEAPON_TYPE := "NEMESIS"
 global PROWLER_WEAPON_TYPE := "PROWLER"
+global PROWLER_FULLAUTO_WEAPON_TYPE := "PROWLER FULLAUTO"
 global HEMLOK_WEAPON_TYPE := "HEMLOK"
 global HEMLOK_SINGLE_WEAPON_TYPE := "HEMLOK SINGLE"
 global RE45_WEAPON_TYPE := "RE45"
@@ -344,7 +345,7 @@ SetSella()
 IsValidWeaponColor(weapon_color)
 {
     return weapon_color == LIGHT_WEAPON_COLOR || weapon_color == HEAVY_WEAPON_COLOR || weapon_color == SNIPER_WEAPON_COLOR 
-    || weapon_color == ENERGY_WEAPON_COLOR || weapon_color == SUPPY_DROP_COLOR || weapon_color == SHOTGUN_WEAPON_COLOR
+    || weapon_color == ENERGY_WEAPON_COLOR || CheckSuppyDropColor(weapon_color) || weapon_color == SHOTGUN_WEAPON_COLOR
 }
 
 DetectAndSetWeapon()
