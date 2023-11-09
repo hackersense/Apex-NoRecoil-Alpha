@@ -92,12 +92,13 @@ global CAR_PIXELS := LoadPixel("car")
 global DEVOTION_PIXELS := LoadPixel("devotion")
 global HAVOC_PIXELS := LoadPixel("havoc")
 global VOLT_PIXELS := LoadPixel("volt")
+global LSTAR_PIXELS := LoadPixel("lstar")
 global NEMESIS_PIXELS := LoadPixel("nemesis")
 ; sniper weapon
-global WINGMAN_PIXELS := LoadPixel("wingman")
+
 ; supply drop weapon
 global PROWLER_PIXELS := LoadPixel("prowler")
-global LSTAR_PIXELS := LoadPixel("lstar")
+global WINGMAN_PIXELS := LoadPixel("wingman")
 ; Turbocharger
 global HAVOC_TURBOCHARGER_PIXELS := LoadPixel("havoc_turbocharger")
 global DEVOTION_TURBOCHARGER_PIXELS := LoadPixel("devotion_turbocharger")
@@ -212,6 +213,7 @@ global DEVOTION_PATTERN := LoadPattern("Devotion.txt")
 global TURBODEVOTION_PATTERN := LoadPattern("DevotionTurbo.txt")
 global HAVOC_PATTERN := LoadPattern("Havoc.txt")
 global VOLT_PATTERN := LoadPattern("Volt.txt")
+global LSTAR_PATTERN := LoadPattern("Lstar.txt")
 global NEMESIS_PATTERN = LoadPattern("Nemesis.txt")
 global NEMESIS_CHARGED_PATTERN = LoadPattern("NemesisCharged.txt")
 ; special
@@ -224,11 +226,11 @@ global RAMPAGE_PATTERN := LoadPattern("Rampage.txt")
 global RAMPAGEAMP_PATTERN := LoadPattern("RampageAmp.txt")
 global P3030_PATTERN := LoadPattern("3030.txt")
 ; sinper weapon pattern
-global WINGMAN_PATTERN := LoadPattern("Wingman.txt")
+
 ; supply drop weapon pattern
 global PROWLER_PATTERN := LoadPattern("Prowler.txt")
 global PROWLER_FULLAUTO_PATTERN := LoadPattern("ProwlerFullAuto.txt")
-global LSTAR_PATTERN := LoadPattern("Lstar.txt")
+global WINGMAN_PATTERN := LoadPattern("Wingman.txt")
 ; sella
 global SELLA_PATTERN := LoadPattern("Sella.txt")
 
@@ -455,6 +457,9 @@ DetectAndSetWeapon()
             if (CheckTurbocharger(HAVOC_TURBOCHARGER_PIXELS)) {
                 current_weapon_type := HAVOC_TURBO_WEAPON_TYPE
             }
+        } else if (CheckWeapon(LSTAR_PIXELS)) {
+            current_weapon_type := LSTAR_WEAPON_TYPE
+            current_pattern := LSTAR_PATTERN
         } else if (CheckWeapon(NEMESIS_PIXELS)) {
             current_weapon_type := NEMESIS_WEAPON_TYPE
             if (IsNemesisFullCharge()) {
@@ -473,20 +478,16 @@ DetectAndSetWeapon()
                 current_pattern := PROWLER_FULLAUTO_PATTERN
             }
             is_gold_optics_weapon := true
-        } else if (CheckWeapon(LSTAR_PIXELS)) {
-            current_weapon_type := LSTAR_WEAPON_TYPE
-            current_pattern := LSTAR_PATTERN
+        } else if (CheckWeapon(WINGMAN_PIXELS)) {
+	    is_gold_optics_weapon := true
+            current_weapon_type := WINGMAN_WEAPON_TYPE
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
         is_gold_optics_weapon := true
         current_weapon_type := SHOTGUN_WEAPON_TYPE
     } else if (check_point_color == SNIPER_WEAPON_COLOR) {
         is_gold_optics_weapon := true
-        if (CheckWeapon(WINGMAN_PIXELS)) {
-            current_weapon_type := WINGMAN_WEAPON_TYPE
-        } else {
-            current_weapon_type := SNIPER_WEAPON_TYPE
-        }
+        current_weapon_type := SNIPER_WEAPON_TYPE
     }
     global debug
     if (debug) {
