@@ -6,6 +6,7 @@
 #SingleInstance force
 #MaxThreadsBuffer on
 #Persistent
+#NoTrayIcon
 Process, Priority, , R
 SetBatchLines, -1
 ListLines Off
@@ -40,7 +41,7 @@ global HAVOC_WEAPON_TYPE := "HAVOC"
 global HAVOC_TURBO_WEAPON_TYPE := "HAVOC TURBO"
 global NEMESIS_WEAPON_TYPE := "NEMESIS"
 global PROWLER_WEAPON_TYPE := "PROWLER"
-global PROWLER_FULLAUTO_WEAPON_TYPE := "PROWLER FULLAUTO"
+; global PROWLER_FULLAUTO_WEAPON_TYPE := "PROWLER FULLAUTO"
 global HEMLOK_WEAPON_TYPE := "HEMLOK"
 global HEMLOK_SINGLE_WEAPON_TYPE := "HEMLOK SINGLE"
 global RE45_WEAPON_TYPE := "RE45"
@@ -86,6 +87,7 @@ global HEMLOK_PIXELS := LoadPixel("hemlok")
 global FLATLINE_PIXELS := LoadPixel("flatline")
 global RAMPAGE_PIXELS := LoadPixel("rampage")
 global P3030_PIXELS := LoadPixel("p3030")
+global PROWLER_PIXELS := LoadPixel("prowler")
 ; special
 global CAR_PIXELS := LoadPixel("car")
 ; energy weapon
@@ -97,7 +99,6 @@ global NEMESIS_PIXELS := LoadPixel("nemesis")
 ; sniper weapon
 
 ; supply drop weapon
-global PROWLER_PIXELS := LoadPixel("prowler")
 global WINGMAN_PIXELS := LoadPixel("wingman")
 ; Turbocharger
 global HAVOC_TURBOCHARGER_PIXELS := LoadPixel("havoc_turbocharger")
@@ -225,11 +226,11 @@ global FLATLINE_PATTERN := LoadPattern("Flatline.txt")
 global RAMPAGE_PATTERN := LoadPattern("Rampage.txt")
 global RAMPAGEAMP_PATTERN := LoadPattern("RampageAmp.txt")
 global P3030_PATTERN := LoadPattern("3030.txt")
+global PROWLER_PATTERN := LoadPattern("Prowler.txt")
+; global PROWLER_FULLAUTO_PATTERN := LoadPattern("ProwlerFullAuto.txt")
 ; sinper weapon pattern
 
 ; supply drop weapon pattern
-global PROWLER_PATTERN := LoadPattern("Prowler.txt")
-global PROWLER_FULLAUTO_PATTERN := LoadPattern("ProwlerFullAuto.txt")
 global WINGMAN_PATTERN := LoadPattern("Wingman.txt")
 ; sella
 global SELLA_PATTERN := LoadPattern("Sella.txt")
@@ -310,7 +311,8 @@ CheckSingleMode()
 
 IsSelectiveFireWeapon(weapon_type)
 {
-    return weapon_type != DEFAULT_WEAPON_TYPE && (weapon_type == HEMLOK_WEAPON_TYPE || weapon_type == HEMLOK_SINGLE_WEAPON_TYPE || weapon_type == PROWLER_WEAPON_TYPE || weapon_type == PROWLER_FULLAUTO_WEAPON_TYPE || weapon_type == FLATLINE_WEAPON_TYPE || weapon_type == R301_WEAPON_TYPE)
+    ; weapon_type == PROWLER_FULLAUTO_WEAPON_TYPE
+    return weapon_type != DEFAULT_WEAPON_TYPE && (weapon_type == HEMLOK_WEAPON_TYPE || weapon_type == HEMLOK_SINGLE_WEAPON_TYPE || weapon_type == PROWLER_WEAPON_TYPe || weapon_type == FLATLINE_WEAPON_TYPE || weapon_type == R301_WEAPON_TYPE)
 }
 
 CheckSuppyDropColor(color)
@@ -469,17 +471,17 @@ DetectAndSetWeapon()
             }
         }
     } else if (CheckSuppyDropColor(check_point_color)) {
-        if (CheckWeapon(PROWLER_PIXELS)) {
-	        if (!is_single_mode) {
-            	current_weapon_type := PROWLER_WEAPON_TYPE
-            	current_pattern := PROWLER_PATTERN
-            } else {
-                current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
-                current_pattern := PROWLER_FULLAUTO_PATTERN
-            }
-            is_gold_optics_weapon := true
-        } else if (CheckWeapon(WINGMAN_PIXELS)) {
-	    is_gold_optics_weapon := true
+        ; if (CheckWeapon(PROWLER_PIXELS)) {
+	    ;     if (!is_single_mode) {
+        ;     	current_weapon_type := PROWLER_WEAPON_TYPE
+        ;     	current_pattern := PROWLER_PATTERN
+        ;     } else {
+        ;         current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
+        ;         current_pattern := PROWLER_FULLAUTO_PATTERN
+        ;     }
+        ;     is_gold_optics_weapon := true
+        if (CheckWeapon(WINGMAN_PIXELS)) {
+	        is_gold_optics_weapon := true
             current_weapon_type := WINGMAN_WEAPON_TYPE
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
@@ -568,7 +570,9 @@ ExitApp
     if (IsMouseShown() || current_weapon_type == DEFAULT_WEAPON_TYPE || current_weapon_type == SHOTGUN_WEAPON_TYPE || current_weapon_type == SNIPER_WEAPON_TYPE)
         return
 
-    if (is_single_mode && current_weapon_type != PROWLER_FULLAUTO_WEAPON_TYPE && !IsAutoClickNeeded())
+    ;  && current_weapon_type != PROWLER_FULLAUTO_WEAPON_TYPE
+
+    if (is_single_mode && !IsAutoClickNeeded())
         return
 
     if (ads_only && !GetKeyState("RButton"))
@@ -685,7 +689,7 @@ IsMouseShown()
 
 ActiveMonitorInfo(ByRef X, ByRef Y, ByRef Width, ByRef Height)
 {
-    CoordMode, Mouse, Screen
+    CoordMode, Mouse, Client
     MouseGetPos, mouseX, mouseY
     SysGet, monCount, MonitorCount
     Loop %monCount% {
