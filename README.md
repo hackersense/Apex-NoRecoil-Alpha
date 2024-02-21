@@ -4,6 +4,12 @@ An AutoHotKey script (works on multiple resolutions) to minimize recoil with aut
 
 Apex Legends 压枪宏，带武器自动检测。
 
+Due to technical issues, this project will not update the weapon pattern. but anyone can submit an updated weapon model by creating a pull request
+由于技术问题，此项目不会更新武器模型（压枪数据），但是任何人都可以通过创建拉取请求来提交更新后的武器模型
+
+If the main project is updated, this project will also be updated synchronously
+若主项目更新，此项目也会同步
+
 ## AHK Script - Description 介绍
 This repository contains an Autohotkey script to help you minimize weapon recoil. Your weapon is auto-detected by the script (no need to press the F key anymore! XD). The detection is based on a straightforward and naive strategy (I call it three-pixel-detection). It is pretty safe because all it does is just capture some pixels and then use mouse DllCall to move your mouse. Run the compiled version if you want more protection. 
 
