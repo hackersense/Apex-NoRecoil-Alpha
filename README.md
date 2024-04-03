@@ -7,6 +7,9 @@ Apex Legends 压枪宏，带武器自动检测。
 Due to technical issues, this project will not update the weapon pattern. but anyone can submit an updated weapon model by creating a pull request
 由于技术问题，此项目不会更新武器模型（压枪数据），但是任何人都可以通过创建拉取请求来提交更新后的武器模型
 
+Since I currently do not have any weapons reaching level 100, the script cannot recognize all weapons at level 100 properly
+由于我目前没有任何武器等级到达100级 所以目前所有武器到达100级后脚本均无法正常识别
+
 If the main project is updated, this project will also be updated synchronously
 若主项目更新，此项目也会同步
 
