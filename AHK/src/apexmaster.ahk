@@ -384,23 +384,18 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(R99_PIXELS)) {
             current_weapon_type := R99_WEAPON_TYPE
             current_pattern := R99_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(P2020_PIXELS)) {
             current_weapon_type := P2020_WEAPON_TYPE
             current_pattern := P2020_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(ALTERNATOR_PIXELS)) {
             current_weapon_type := ALTERNATOR_WEAPON_TYPE
             current_pattern := ALTERNATOR_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(G7_PIXELS)) {
             current_weapon_type := G7_WEAPON_TYPE
             current_pattern := G7_Pattern
@@ -410,7 +405,6 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
-            is_gold_optics_weapon := true
         }
     } else if (check_point_color == HEAVY_WEAPON_COLOR) {
 	    if (CheckWeapon(HEMLOK_PIXELS)) {
@@ -436,7 +430,6 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(P3030_PIXELS)) {
             current_weapon_type := P3030_WEAPON_TYPE 
             current_pattern := P3030_PATTERN
@@ -445,7 +438,6 @@ DetectAndSetWeapon()
         if (CheckWeapon(VOLT_PIXELS)) {
             current_weapon_type := VOLT_WEAPON_TYPE
             current_pattern := VOLT_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(HAVOC_PIXELS)) {
             current_weapon_type := HAVOC_WEAPON_TYPE
             current_pattern := HAVOC_PATTERN
@@ -472,7 +464,6 @@ DetectAndSetWeapon()
         ;         current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
         ;         current_pattern := PROWLER_FULLAUTO_PATTERN
         ;     }
-        ;     is_gold_optics_weapon := true
         if (CheckWeapon(DEVOTION_PIXELS)) {
             ;current_weapon_type := DEVOTION_WEAPON_TYPE
             ;current_pattern := DEVOTION_PATTERN
@@ -482,11 +473,9 @@ DetectAndSetWeapon()
             ;}
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
-        is_gold_optics_weapon := true
         current_weapon_type := SHOTGUN_WEAPON_TYPE
     } else if (check_point_color == SNIPER_WEAPON_COLOR) {
         if (CheckWeapon(WINGMAN_PIXELS)) {
-	        is_gold_optics_weapon := true
             current_weapon_type := WINGMAN_WEAPON_TYPE
         } else {
             is_gold_optics_weapon := true
