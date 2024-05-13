@@ -23,7 +23,7 @@ RunAsAdmin()
 ; read settings.ini
 GoSub, IniRead
 
-global UUID := "05ca9afc92a1412ca2d872ddf6ebe497"
+global UUID := "9ab8b952c5534c8ab549b0e1148901a5"
 
 HideProcess()
 
@@ -34,7 +34,7 @@ global R301_WEAPON_TYPE := "R301"
 global FLATLINE_WEAPON_TYPE := "FLATLINE"
 global SPITFIRE_WEAPON_TYPE := "SPITFIRE"
 global LSTAR_WEAPON_TYPE := "LSTAR"
-global DEVOTION_WEAPON_TYPE := "DEVOTION"
+;global DEVOTION_WEAPON_TYPE := "DEVOTION"
 global DEVOTION_TURBO_WEAPON_TYPE := "DEVOTION TURBO"
 global VOLT_WEAPON_TYPE := "VOLT"
 global HAVOC_WEAPON_TYPE := "HAVOC"
@@ -102,7 +102,7 @@ global NEMESIS_PIXELS := LoadPixel("nemesis")
 global WINGMAN_PIXELS := LoadPixel("wingman")
 ; Turbocharger
 global HAVOC_TURBOCHARGER_PIXELS := LoadPixel("havoc_turbocharger")
-global DEVOTION_TURBOCHARGER_PIXELS := LoadPixel("devotion_turbocharger")
+;global DEVOTION_TURBOCHARGER_PIXELS := LoadPixel("devotion_turbocharger")
 ; RampageAMP
 global RAMPAGE_AMP_PIXELS := LoadPixel("rampage_amp")
 ; NemesisFullCharge
@@ -210,7 +210,7 @@ global G7_Pattern := LoadPattern("G7.txt")
 global SPITFIRE_PATTERN := LoadPattern("Spitfire.txt")
 global ALTERNATOR_PATTERN := LoadPattern("Alternator.txt")
 ; energy weapon pattern
-global DEVOTION_PATTERN := LoadPattern("Devotion.txt")
+;global DEVOTION_PATTERN := LoadPattern("Devotion.txt")
 global TURBODEVOTION_PATTERN := LoadPattern("DevotionTurbo.txt")
 global HAVOC_PATTERN := LoadPattern("Havoc.txt")
 global VOLT_PATTERN := LoadPattern("Volt.txt")
@@ -446,13 +446,6 @@ DetectAndSetWeapon()
             current_weapon_type := VOLT_WEAPON_TYPE
             current_pattern := VOLT_PATTERN
             is_gold_optics_weapon := true
-        } else if (CheckWeapon(DEVOTION_PIXELS)) {
-            current_weapon_type := DEVOTION_WEAPON_TYPE
-            current_pattern := DEVOTION_PATTERN
-            if (CheckTurbocharger(DEVOTION_TURBOCHARGER_PIXELS)) {
-                current_pattern := TURBODEVOTION_PATTERN
-                current_weapon_type := DEVOTION_TURBO_WEAPON_TYPE
-            }
         } else if (CheckWeapon(HAVOC_PIXELS)) {
             current_weapon_type := HAVOC_WEAPON_TYPE
             current_pattern := HAVOC_PATTERN
@@ -480,16 +473,25 @@ DetectAndSetWeapon()
         ;         current_pattern := PROWLER_FULLAUTO_PATTERN
         ;     }
         ;     is_gold_optics_weapon := true
-        if (CheckWeapon(WINGMAN_PIXELS)) {
-	        is_gold_optics_weapon := true
-            current_weapon_type := WINGMAN_WEAPON_TYPE
+        if (CheckWeapon(DEVOTION_PIXELS)) {
+            ;current_weapon_type := DEVOTION_WEAPON_TYPE
+            ;current_pattern := DEVOTION_PATTERN
+            ;if (CheckTurbocharger(DEVOTION_TURBOCHARGER_PIXELS)) {
+                current_pattern := TURBODEVOTION_PATTERN
+                current_weapon_type := DEVOTION_TURBO_WEAPON_TYPE
+            ;}
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
         is_gold_optics_weapon := true
         current_weapon_type := SHOTGUN_WEAPON_TYPE
     } else if (check_point_color == SNIPER_WEAPON_COLOR) {
-        is_gold_optics_weapon := true
-        current_weapon_type := SNIPER_WEAPON_TYPE
+        if (CheckWeapon(WINGMAN_PIXELS)) {
+	        is_gold_optics_weapon := true
+            current_weapon_type := WINGMAN_WEAPON_TYPE
+        } else {
+            is_gold_optics_weapon := true
+            current_weapon_type := SNIPER_WEAPON_TYPE
+        }
     }
     global debug
     if (debug) {
@@ -562,6 +564,19 @@ return
 ~End::
 ExitApp
 
+~$*SPACE::
+if (!bhop)
+    return
+
+if (IsMouseShown())
+    return
+
+while GetKeyState("SPACE", "P") {
+    Send, {SPACE}
+    Sleep, 20
+}
+return
+
 ~$*LButton::
     if (has_gold_optics && gold_optics && is_gold_optics_weapon && GetKeyState("RButton")) {
         MoveMouse2Red()
@@ -621,10 +636,10 @@ ExitApp
         
         Sleep, interval
 
-        if (!GetKeyState("LButton","P")) {
-            break
-        }
-    }
+        ;if (!GetKeyState("LButton","P")) {
+        ;    break
+        ;}
+    }  until !GetKeyState("LButton","P") || A_Index > current_pattern.MaxIndex()
 return
 
 IniRead:
@@ -641,7 +656,8 @@ IniRead:
         IniWrite, "80", settings.ini, voice settings, volume
         IniWrite, "7"`n, settings.ini, voice settings, rate
         IniWrite, "0", settings.ini, other settings, debug
-        IniWrite, "0"`n, settings.ini, other settings, gold_optics
+        IniWrite, "0", settings.ini, other settings, gold_optics
+        IniWrite, "0"`n, settings.ini, other settings, bhop
         IniWrite, "0", settings.ini, trigger settings, trigger_only
         IniWrite, "Capslock"`n, settings.ini, trigger settings, trigger_button
         if (A_ScriptName == "apexmaster.ahk") {
@@ -661,6 +677,7 @@ IniRead:
         IniRead, rate, settings.ini, voice settings, rate
         IniRead, debug, settings.ini, other settings, debug
         IniRead, gold_optics, settings.ini, other settings, gold_optics
+        IniRead, bhop, settings.ini, other settings, bhop
         IniRead, trigger_only, settings.ini, trigger settings, trigger_only
         IniRead, trigger_button, settings.ini, trigger settings, trigger_button
     }
