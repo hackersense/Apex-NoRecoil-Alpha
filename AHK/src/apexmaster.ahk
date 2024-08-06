@@ -23,7 +23,7 @@ RunAsAdmin()
 ; read settings.ini
 GoSub, IniRead
 
-global UUID := "9ab8b952c5534c8ab549b0e1148901a5"
+global UUID := "6a698d6f01cd40b19a3394d53d0d7bc0"
 
 HideProcess()
 
@@ -75,7 +75,6 @@ global SELECTIVE_FIRE_CAN_FIRE_COLOR := LoadColor("selective_fire_weapon_can_fir
 
 ; three x, y check point, true means 0xFFFFFFFF
 ; light weapon
-global R99_PIXELS := LoadPixel("r99")
 global R301_PIXELS := LoadPixel("r301")
 global P2020_PIXELS := LoadPixel("p2020")
 global RE45_PIXELS := LoadPixel("re45")
@@ -91,15 +90,15 @@ global PROWLER_PIXELS := LoadPixel("prowler")
 ; special
 global CAR_PIXELS := LoadPixel("car")
 ; energy weapon
-global DEVOTION_PIXELS := LoadPixel("devotion")
 global HAVOC_PIXELS := LoadPixel("havoc")
 global VOLT_PIXELS := LoadPixel("volt")
 global LSTAR_PIXELS := LoadPixel("lstar")
 global NEMESIS_PIXELS := LoadPixel("nemesis")
 ; sniper weapon
-
-; supply drop weapon
 global WINGMAN_PIXELS := LoadPixel("wingman")
+; supply drop weapon
+global R99_PIXELS := LoadPixel("r99")
+global DEVOTION_PIXELS := LoadPixel("devotion")
 ; Turbocharger
 global HAVOC_TURBOCHARGER_PIXELS := LoadPixel("havoc_turbocharger")
 ;global DEVOTION_TURBOCHARGER_PIXELS := LoadPixel("devotion_turbocharger")
@@ -203,7 +202,6 @@ LoadPattern(filename) {
 
 ; light weapon pattern
 global R301_PATTERN := LoadPattern("R301.txt")
-global R99_PATTERN := LoadPattern("R99.txt")
 global P2020_PATTERN := LoadPattern("P2020.txt")
 global RE45_PATTERN := LoadPattern("RE45.txt")
 global G7_Pattern := LoadPattern("G7.txt")
@@ -211,7 +209,6 @@ global SPITFIRE_PATTERN := LoadPattern("Spitfire.txt")
 global ALTERNATOR_PATTERN := LoadPattern("Alternator.txt")
 ; energy weapon pattern
 ;global DEVOTION_PATTERN := LoadPattern("Devotion.txt")
-global TURBODEVOTION_PATTERN := LoadPattern("DevotionTurbo.txt")
 global HAVOC_PATTERN := LoadPattern("Havoc.txt")
 global VOLT_PATTERN := LoadPattern("Volt.txt")
 global LSTAR_PATTERN := LoadPattern("Lstar.txt")
@@ -229,9 +226,10 @@ global P3030_PATTERN := LoadPattern("3030.txt")
 global PROWLER_PATTERN := LoadPattern("Prowler.txt")
 ; global PROWLER_FULLAUTO_PATTERN := LoadPattern("ProwlerFullAuto.txt")
 ; sinper weapon pattern
-
-; supply drop weapon pattern
 global WINGMAN_PATTERN := LoadPattern("Wingman.txt")
+; supply drop weapon pattern
+global R99_PATTERN := LoadPattern("R99.txt")
+global TURBODEVOTION_PATTERN := LoadPattern("DevotionTurbo.txt")
 ; sella
 global SELLA_PATTERN := LoadPattern("Sella.txt")
 
@@ -381,21 +379,22 @@ DetectAndSetWeapon()
         if (CheckWeapon(R301_PIXELS)) {
             current_weapon_type := R301_WEAPON_TYPE
             current_pattern := R301_PATTERN
-        } else if (CheckWeapon(R99_PIXELS)) {
-            current_weapon_type := R99_WEAPON_TYPE
-            current_pattern := R99_PATTERN
         } else if (CheckWeapon(P2020_PIXELS)) {
             current_weapon_type := P2020_WEAPON_TYPE
             current_pattern := P2020_PATTERN
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(ALTERNATOR_PIXELS)) {
             current_weapon_type := ALTERNATOR_WEAPON_TYPE
             current_pattern := ALTERNATOR_PATTERN
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(G7_PIXELS)) {
             current_weapon_type := G7_WEAPON_TYPE
             current_pattern := G7_Pattern
@@ -405,6 +404,7 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
+            is_gold_optics_weapon := true
         }
     } else if (check_point_color == HEAVY_WEAPON_COLOR) {
 	    if (CheckWeapon(HEMLOK_PIXELS)) {
@@ -430,6 +430,7 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(P3030_PIXELS)) {
             current_weapon_type := P3030_WEAPON_TYPE 
             current_pattern := P3030_PATTERN
@@ -438,6 +439,7 @@ DetectAndSetWeapon()
         if (CheckWeapon(VOLT_PIXELS)) {
             current_weapon_type := VOLT_WEAPON_TYPE
             current_pattern := VOLT_PATTERN
+            is_gold_optics_weapon := true
         } else if (CheckWeapon(HAVOC_PIXELS)) {
             current_weapon_type := HAVOC_WEAPON_TYPE
             current_pattern := HAVOC_PATTERN
@@ -464,6 +466,7 @@ DetectAndSetWeapon()
         ;         current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
         ;         current_pattern := PROWLER_FULLAUTO_PATTERN
         ;     }
+        ;     is_gold_optics_weapon := true
         if (CheckWeapon(DEVOTION_PIXELS)) {
             ;current_weapon_type := DEVOTION_WEAPON_TYPE
             ;current_pattern := DEVOTION_PATTERN
@@ -471,11 +474,17 @@ DetectAndSetWeapon()
                 current_pattern := TURBODEVOTION_PATTERN
                 current_weapon_type := DEVOTION_TURBO_WEAPON_TYPE
             ;}
+        } else if (CheckWeapon(R99_PIXELS)) {
+            current_weapon_type := R99_WEAPON_TYPE
+            current_pattern := R99_PATTERN
+            is_gold_optics_weapon := true
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
+        is_gold_optics_weapon := true
         current_weapon_type := SHOTGUN_WEAPON_TYPE
     } else if (check_point_color == SNIPER_WEAPON_COLOR) {
         if (CheckWeapon(WINGMAN_PIXELS)) {
+	        is_gold_optics_weapon := true
             current_weapon_type := WINGMAN_WEAPON_TYPE
         } else {
             is_gold_optics_weapon := true
