@@ -18,8 +18,6 @@ SetWinDelay, -1
 SetControlDelay, -1
 SendMode Input
 
-RunAsAdmin()
-
 ; read settings.ini
 GoSub, IniRead
 
