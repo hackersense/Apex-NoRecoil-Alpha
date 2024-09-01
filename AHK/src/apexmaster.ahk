@@ -47,6 +47,7 @@ global HEMLOK_SINGLE_WEAPON_TYPE := "HEMLOK SINGLE"
 global RE45_WEAPON_TYPE := "RE45"
 global ALTERNATOR_WEAPON_TYPE := "ALTERNATOR"
 global P2020_WEAPON_TYPE := "P2020"
+global P2020_DUALS_WEAPON_TYPE := "P2020 DUALS"
 global RAMPAGE_WEAPON_TYPE := "RAMPAGE"
 global WINGMAN_WEAPON_TYPE := "WINGMAN"
 global G7_WEAPON_TYPE := "G7"
@@ -129,41 +130,6 @@ global NearAimScanT := ZeroY - AntiShakeY
 global NearAimScanR := ZeroX + AntiShakeX
 global NearAimScanB := ZeroY + AntiShakeY
 
-MoveMouse2Red() 
-{ 
-    ; reds := [0x3841AD,0x5764BC,0x6866C3]
-    ; reds := [0x5054C8,0x3841AD,0x333DB1,0x5764BC]
-    reds := [0x5054C8,0x3841AD,0x5764BC]
-    ; reds := [0x5054C8]
-    For key, value in reds {
-        aimPixelX := ZeroX
-        aimPixelY := ZeroY  
-        DirX := -1
-        DirY := -1
-        PixelSearch, aimPixelX, aimPixelY, NearAimScanL, NearAimScanT, NearAimScanR, NearAimScanB, %value%, ColVn, Fast
-        if (!ErrorLevel) {
-            break
-        }
-
-        PixelSearch, aimPixelX, aimPixelY, ScanL, ScanT, ScanR, ScanB, %value%, ColVn, Fast
-        if (ErrorLevel) {
-            continue
-        }
-
-        AimX := (aimPixelX - ZeroX) / 2
-        AimY := (aimPixelY - ZeroY) / 2
-        If ( AimX > 0 ) {
-            DirX := 1
-        }
-        If (AimY > 0 ) {
-            DirY := 1
-        }
-        MoveX := Round((AimX + MoveALittleMore * DirX) * modifier)
-        MoveY := Round((AimY + MoveALittleMore * DirY) * modifier)
-        DllCall("mouse_event", uint, 1, int, MoveX, int, MoveY, uint, 0, int, 0)
-    }
-}
-
 ; each player can hold 2 weapons
 LoadPixel(name) {
     global resolution
@@ -203,6 +169,7 @@ LoadPattern(filename) {
 ; light weapon pattern
 global R301_PATTERN := LoadPattern("R301.txt")
 global P2020_PATTERN := LoadPattern("P2020.txt")
+global P2020_DUALS_PATTERN := LoadPattern("P2020Duals.txt")
 global RE45_PATTERN := LoadPattern("RE45.txt")
 global G7_Pattern := LoadPattern("G7.txt")
 global SPITFIRE_PATTERN := LoadPattern("Spitfire.txt")
@@ -246,9 +213,7 @@ SAPI.volume:=volume
 global current_pattern := ["0,0,0"]
 global current_weapon_type := DEFAULT_WEAPON_TYPE
 global current_weapon_num := 0
-global is_gold_optics_weapon := false
 global peackkeeper_lock := false
-global has_gold_optics := false
 global is_single_mode := false
 
 ; mouse sensitivity setting
@@ -307,6 +272,15 @@ CheckSingleMode()
     return false
 }
 
+CheckSelectiveFire()
+{
+    PixelGetColor, check_point_color, SELECTIVE_FIRE_CAN_FIRE_PIXELS[1], SELECTIVE_FIRE_CAN_FIRE_PIXELS[2]
+    if (check_point_color == SELECTIVE_FIRE_CAN_FIRE_COLOR) {
+        return true
+    }
+    return false
+}
+
 IsSelectiveFireWeapon(weapon_type)
 {
     ; weapon_type == PROWLER_FULLAUTO_WEAPON_TYPE
@@ -322,7 +296,6 @@ Reset()
 {
     is_single_mode := false
     peackkeeper_lock := false
-    is_gold_optics_weapon := false
     current_weapon_type := DEFAULT_WEAPON_TYPE
     check_point_color := 0
     current_weapon_num := 0
@@ -352,6 +325,15 @@ IsValidWeaponColor(weapon_color)
 
 DetectAndSetWeapon()
 {
+    SetTimer, DetectAndSetWeaponTimer, -300
+}
+
+DetectAndSetWeaponTimer:
+    DetectAndSetWeaponNative()
+return
+
+DetectAndSetWeaponNative()
+{
     Reset()
     
     if IsSella() {
@@ -380,21 +362,22 @@ DetectAndSetWeapon()
             current_weapon_type := R301_WEAPON_TYPE
             current_pattern := R301_PATTERN
         } else if (CheckWeapon(P2020_PIXELS)) {
-            current_weapon_type := P2020_WEAPON_TYPE
-            current_pattern := P2020_PATTERN
-            is_gold_optics_weapon := true
+            if (CheckSelectiveFire() && !is_single_mode) {
+                current_weapon_type := P2020_DUALS_WEAPON_TYPE
+                current_pattern := P2020_DUALS_PATTERN
+            } else {
+                current_weapon_type := P2020_WEAPON_TYPE
+                current_pattern := P2020_PATTERN
+            }
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(ALTERNATOR_PIXELS)) {
             current_weapon_type := ALTERNATOR_WEAPON_TYPE
             current_pattern := ALTERNATOR_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(G7_PIXELS)) {
             current_weapon_type := G7_WEAPON_TYPE
             current_pattern := G7_Pattern
@@ -404,7 +387,6 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(RE45_PIXELS)) {
             current_weapon_type := RE45_WEAPON_TYPE
             current_pattern := RE45_PATTERN
-            is_gold_optics_weapon := true
         }
     } else if (check_point_color == HEAVY_WEAPON_COLOR) {
 	    if (CheckWeapon(HEMLOK_PIXELS)) {
@@ -430,7 +412,6 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(CAR_PIXELS)) { 
             current_weapon_type := CAR_WEAPON_TYPE 
             current_pattern := CAR_PATTERN 
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(P3030_PIXELS)) {
             current_weapon_type := P3030_WEAPON_TYPE 
             current_pattern := P3030_PATTERN
@@ -439,7 +420,6 @@ DetectAndSetWeapon()
         if (CheckWeapon(VOLT_PIXELS)) {
             current_weapon_type := VOLT_WEAPON_TYPE
             current_pattern := VOLT_PATTERN
-            is_gold_optics_weapon := true
         } else if (CheckWeapon(HAVOC_PIXELS)) {
             current_weapon_type := HAVOC_WEAPON_TYPE
             current_pattern := HAVOC_PATTERN
@@ -466,7 +446,6 @@ DetectAndSetWeapon()
         ;         current_weapon_type := PROWLER_FULLAUTO_WEAPON_TYPE
         ;         current_pattern := PROWLER_FULLAUTO_PATTERN
         ;     }
-        ;     is_gold_optics_weapon := true
         if (CheckWeapon(DEVOTION_PIXELS)) {
             ;current_weapon_type := DEVOTION_WEAPON_TYPE
             ;current_pattern := DEVOTION_PATTERN
@@ -477,17 +456,13 @@ DetectAndSetWeapon()
         } else if (CheckWeapon(R99_PIXELS)) {
             current_weapon_type := R99_WEAPON_TYPE
             current_pattern := R99_PATTERN
-            is_gold_optics_weapon := true
         }
     } else if (check_point_color == SHOTGUN_WEAPON_COLOR) {
-        is_gold_optics_weapon := true
         current_weapon_type := SHOTGUN_WEAPON_TYPE
     } else if (check_point_color == SNIPER_WEAPON_COLOR) {
         if (CheckWeapon(WINGMAN_PIXELS)) {
-	        is_gold_optics_weapon := true
             current_weapon_type := WINGMAN_WEAPON_TYPE
         } else {
-            is_gold_optics_weapon := true
             current_weapon_type := SNIPER_WEAPON_TYPE
         }
     }
@@ -539,13 +514,6 @@ return
     Reset()
 return
 
-~$*0::
-    if (gold_optics) {
-        has_gold_optics := !has_gold_optics
-        Tooltip("has_gold_optics: " + has_gold_optics)
-    }
-return
-
 ~$*G Up::
     Reset()
 return
@@ -576,10 +544,6 @@ while GetKeyState("SPACE", "P") {
 return
 
 ~$*LButton::
-    if (has_gold_optics && gold_optics && is_gold_optics_weapon && GetKeyState("RButton")) {
-        MoveMouse2Red()
-    }
-
     if (IsMouseShown() || current_weapon_type == DEFAULT_WEAPON_TYPE || current_weapon_type == SHOTGUN_WEAPON_TYPE || current_weapon_type == SNIPER_WEAPON_TYPE)
         return
 
@@ -654,7 +618,6 @@ IniRead:
         IniWrite, "80", settings.ini, voice settings, volume
         IniWrite, "7"`n, settings.ini, voice settings, rate
         IniWrite, "0", settings.ini, other settings, debug
-        IniWrite, "0", settings.ini, other settings, gold_optics
         IniWrite, "0"`n, settings.ini, other settings, bhop
         IniWrite, "0", settings.ini, trigger settings, trigger_only
         IniWrite, "Capslock"`n, settings.ini, trigger settings, trigger_button
@@ -674,7 +637,6 @@ IniRead:
         IniRead, volume, settings.ini, voice settings, volume
         IniRead, rate, settings.ini, voice settings, rate
         IniRead, debug, settings.ini, other settings, debug
-        IniRead, gold_optics, settings.ini, other settings, gold_optics
         IniRead, bhop, settings.ini, other settings, bhop
         IniRead, trigger_only, settings.ini, trigger settings, trigger_only
         IniRead, trigger_button, settings.ini, trigger settings, trigger_button
