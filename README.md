@@ -13,6 +13,9 @@ Since I currently do not have any weapons reaching level 100, the script cannot 
 If the main project is updated, this project will also be updated synchronously
 若主项目更新，此项目也会同步
 
+Original project: https://github.com/mgsweet/Apex-NoRecoil-2021
+原始项目: https://github.com/mgsweet/Apex-NoRecoil-2021
+
 ## AHK Script - Description 介绍
 This repository contains an Autohotkey script to help you minimize weapon recoil. Your weapon is auto-detected by the script (no need to press the F key anymore! XD). The detection is based on a straightforward and naive strategy (I call it three-pixel-detection). It is pretty safe because all it does is just capture some pixels and then use mouse DllCall to move your mouse. Run the compiled version if you want more protection. 
 
