@@ -56,11 +56,6 @@ if (trigger_button == "Capslock") {
 } else {
     Gui, Add, DropDownList, x170 y169 w100  vtrigger_button, Capslock||NumLock|ScrollLock|
 }
-if (gold_optics == "1") {
-    Gui, Add, CheckBox, x300 y169 w150 h30 vgold_optics Checked, gold_optics
-} else {
-    Gui, Add, CheckBox, x300 y169 w150 h30 vgold_optics, gold_optics
-}
 Gui, Add, Text, x20 y200 w120 h30 , resolution:
 Gui, Font, S10, 
 if (resolution == "3840x2160") {
@@ -132,7 +127,6 @@ IniRead:
         IniWrite, "80", settings.ini, voice settings, volume
         IniWrite, "7"`n, settings.ini, voice settings, rate
         IniWrite, "0", settings.ini, other settings, debug
-        IniWrite, "0"`n, settings.ini, other settings, gold_optics
         IniWrite, "0", settings.ini, trigger settings, trigger_only
         IniWrite, "Capslock"`n, settings.ini, trigger settings, trigger_button
         if (A_ScriptName == "gui.ahk") {
@@ -150,7 +144,6 @@ IniRead:
         IniRead, volume, settings.ini, voice settings, volume
         IniRead, rate, settings.ini, voice settings, rate
         IniRead, debug, settings.ini, other settings, debug
-        IniRead, gold_optics, settings.ini, other settings, gold_optics
         IniRead, trigger_only, settings.ini, trigger settings, trigger_only
         IniRead, trigger_button, settings.ini, trigger settings, trigger_button
     }
@@ -164,7 +157,6 @@ btSave:
     IniWrite, "%auto_fire%", settings.ini, mouse settings, auto_fire
     IniWrite, "%ads_only%", settings.ini, mouse settings, ads_only
     IniWrite, "%debug%", settings.ini, other settings, debug    
-    IniWrite, "%gold_optics%", settings.ini, other settings, gold_optics
     IniWrite, "%trigger_only%", settings.ini, trigger settings, trigger_only
     IniWrite, "%trigger_button%", settings.ini, trigger settings, trigger_button
     if (A_ScriptName == "gui.ahk") {
