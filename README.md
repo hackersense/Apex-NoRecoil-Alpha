@@ -1,5 +1,11 @@
 # Apex-NoRecoil-Alpha
 
+## WARNING
+This script has been detected in the latest game patch!
+
+在最新的游戏补丁中 此脚本已被检测！
+---
+
 An AutoHotKey script (works on multiple resolutions) to minimize recoil with auto weapon detection for Apex Legends. 
 
 Apex Legends 压枪宏，带武器自动检测。
