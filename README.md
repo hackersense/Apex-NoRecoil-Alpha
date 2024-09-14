@@ -4,6 +4,9 @@
 This script has been detected in the latest game patch!
 
 在最新的游戏补丁中 此脚本已被检测！
+
+![image](https://github.com/user-attachments/assets/fd4f06ec-93c2-4e5f-8f50-271bb86b2e65)
+
 ---
 
 An AutoHotKey script (works on multiple resolutions) to minimize recoil with auto weapon detection for Apex Legends. 
